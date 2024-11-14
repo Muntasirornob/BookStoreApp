@@ -1,8 +1,5 @@
-import { useEffect, useState } from "react";
-
-
 export const FeaturedProducts = () => {
-  const [products, setProducts] = useState([]);
+  
 
 
   return (
