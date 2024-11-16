@@ -5,6 +5,18 @@ import { FilterBar } from "../../components/FilterBar";
 export const ProductList = () => {
 
     const [show, setShow] = useState(false);
+    const [products, setProducts] = useState([]);
+
+
+    useEffect(() => {
+        async function fetchProducts(){
+            const response = await fetch("http://localhost:8000/featured_products");
+            const data= await response.json()
+            setProducts(data)
+        }
+        fetchProducts();
+    }, [])
+
 
     return (
 
@@ -20,10 +32,9 @@ export const ProductList = () => {
           </div>    
 
           <div className="flex flex-wrap justify-center lg:flex-row">
-            
-              <ProductCard />
-              <ProductCard />
-              <ProductCard />
+            { products.map ((product) => ( 
+                 <ProductCard key ={product.id}  product={product}/>   
+            ))}
                         
           </div>  
         </section>
