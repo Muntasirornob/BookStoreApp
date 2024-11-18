@@ -3,6 +3,7 @@ import { Rating } from "./elements/Rating";
 
 export const ProductCard = ({product}) => {
     const {id, name, overview, poster, price, best_seller,rating} = product;
+    
     return (
         <div className="m-3 max-w-sm bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700">
         <Link to={`/products/${id}`} className="relative" >
@@ -17,7 +18,7 @@ export const ProductCard = ({product}) => {
             <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">{overview}</p>
             
             <div className="flex items-center my-2">
-                <Rating rat={rating} />
+                <Rating rating={rating} />
             </div>
 
             <p className="flex justify-between items-center">
