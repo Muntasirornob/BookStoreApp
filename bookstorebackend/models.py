@@ -11,6 +11,6 @@ class Products(models.Model):
     in_stock = models.BooleanField(default=True)  # Availability
     size = models.CharField(max_length=50, blank=True, null=True)  # Size information
     best_seller = models.BooleanField(default=False)  # Bestseller status
+    class Meta:
+        db_table = 'bookstorebackend_products'  # Explicit table name
 
-    def __str__(self):
-        return self.name
