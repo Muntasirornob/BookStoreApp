@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { Search } from "../Search";
 
 export const Header = () =>
 {
@@ -24,6 +25,7 @@ export const Header = () =>
                 </div>
             </div>
         </nav>
+        <Search></Search>
     </header>
     )
 
