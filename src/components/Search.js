@@ -1,4 +1,4 @@
-export const Search = () => {
+export const  Search = () => {
     return (
       <div className="mx-auto max-w-screen-xl p-2 my-5">
           <form className="flex items-center">   
