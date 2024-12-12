@@ -56,6 +56,10 @@ ROOT_URLCONF = 'core.urls'
 
 CORS_ALLOWED_ORIGINS = ["http://localhost:3000"]
 
+
+# Alternatively, allow all origins (use cautiously in development):
+CORS_ALLOW_ALL_ORIGINS = True
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',

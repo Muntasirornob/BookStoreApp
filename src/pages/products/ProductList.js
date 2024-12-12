@@ -1,48 +1,67 @@
 import { useEffect, useState } from "react";
-import { ProductCard } from "../../components/ProductCart"
+import { ProductCard } from "../../components/ProductCart";
 import { FilterBar } from "../../components/FilterBar";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export const ProductList = () => {
-
     const [show, setShow] = useState(false);
     const [products, setProducts] = useState([]);
+    const [searchQuery, setSearchQuery] = useState(""); // For the search input
+    const location = useLocation();
+    const navigate = useNavigate();
 
+    const searchTerm = new URLSearchParams(location.search).get("q");
 
+    // Fetch products whenever searchTerm changes
     useEffect(() => {
-        async function fetchProducts(){
-            const response = await fetch("http://127.0.0.1:8000/api/products/");
-            const data= await response.json()
-            setProducts(data)
+        async function fetchProducts() {
+            const response = await fetch(`http://127.0.0.1:8000/products/?q=${searchTerm || ""}`);
+            if (response.ok) {
+                const data = await response.json();
+                setProducts(data);
+            } else {
+                console.error("Failed to fetch products");
+            }
         }
         fetchProducts();
-    }, [])
+    }, [searchTerm]);
 
+    // Handle search input and update URL
+    const handleSearch = (e) => {
+        e.preventDefault();
+        navigate(`/products?q=${searchQuery}`);
+    };
 
     return (
-
         <main>
-        <section className="my-5">
-          <div className="my-5 flex justify-between">
-            <span className="text-2xl font-semibold dark:text-slate-100 mb-5">All eBooks(15)</span>
-            <span>
-              <button onClick={() => setShow(!show)} id="dropdownMenuIconButton" data-dropdown-toggle="dropdownDots" className="inline-flex items-center p-2 text-sm font-medium text-center text-gray-900 bg-gray-100 rounded-lg hover:bg-gray-200 dark:text-white dark:bg-gray-600 dark:hover:bg-gray-700" type="button"> 
-                <svg className="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path></svg>
-              </button>
-            </span>            
-          </div>    
+            <section className="my-5">
+                <div className="my-5 flex justify-between">
+                    <span className="text-2xl font-semibold dark:text-slate-100 mb-5">All eBooks</span>
+                    <form onSubmit={handleSearch} className="flex items-center">
+                        <input
+                            type="text"
+                            placeholder="Search..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="border p-2 rounded-l-lg dark:bg-gray-800 dark:text-white"
+                        />
+                        <button
+                            type="submit"
+                            className="bg-blue-500 text-white px-4 rounded-r-lg dark:bg-blue-700"
+                        >
+                            Search
+                        </button>
+                    </form>
+                </div>
 
-          <div className="flex flex-wrap justify-center lg:flex-row">
-            { products.map ((product) => ( 
-                 <ProductCard key ={product.id}  product={product}/>   
-            ))}
-                        
-          </div>  
-        </section>
+                <div className="flex flex-wrap justify-center lg:flex-row">
+                    {products.map((product) => (
+                        <ProductCard key={product.id} product={product} />
+                    ))}
+                </div>
+            </section>
 
-        { show && <FilterBar setShow={setShow} /> }
-
-    </main>
-
-    )
-
-}
+            {show && <FilterBar setShow={setShow} />}
+        </main>
+    );
+};
