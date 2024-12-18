@@ -1,0 +1,20 @@
+# Use Node.js as the base image
+FROM node:20
+
+# Set the working directory
+WORKDIR /app
+
+# Copy package files and install dependencies
+COPY ./package.json ./package-lock.json /app/
+RUN npm install
+
+# Copy React app source code
+COPY ./src /app/src
+COPY ./public /app/public
+
+# Build the React app
+RUN npm run build
+
+# Serve the build using a lightweight HTTP server
+RUN npm install -g serve
+CMD ["serve", "-s", "build", "-l", "3000"]
