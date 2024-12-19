@@ -1,20 +1,30 @@
 version: '3.9'
 
 services:
-  backend:
+  web:
     build:
-      context: ./bookstorebackend
-      dockerfile: Dockerfile
+      context: .  # Use the project root as the context
+      dockerfile: bookstorebackend/Dockerfile
     container_name: bookstore-backend
+    working_dir: /app  # Set the working directory to /app
+    environment:
+      MYENV: EXAMPLE
+    volumes:
+      - .:/app  # Map the project root to /app inside the container
+      - sqlite-data:/app/db  # Persist the SQLite database
     ports:
       - "8000:8000"
-    volumes:
-      - ./bookstorebackend:/app            # Sync code changes
-      - ./bookstorebackend/db.sqlite3:/app/db.sqlite3  # Persist database
-    environment:
-      - DEBUG=1
-      - DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1
-    command: bash -c "python manage.py runserver 0.0.0.0:8000"
+
+  web_migrate:
+    extends:
+      service: web
+    command: python manage.py migrate
+
+  web_run:
+    extends:
+      service: web
+    command: python manage.py runserver 0.0.0.0:8000
+
   frontend:
     build:
       context: .
@@ -26,4 +36,14 @@ services:
       - ./src:/app/src
       - ./public:/app/public
     depends_on:
-      - backend
+      - web_run
+
+  sqlite:
+    image: nouchka/sqlite3:latest
+    container_name: sqlite-container
+    volumes:
+      - sqlite-data:/mydatabase
+    command: tail -f /dev/null
+
+volumes:
+  sqlite-data:
